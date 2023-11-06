@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -13,60 +15,102 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity
 {
 
-    private TextView textViewStopwatch;
-
     private Button buttonStart, buttonStop, buttonReset, buttonResume;
 
-    private int seconds = 0;
 
-    private boolean running, wasRunning;
+    private long lastPause = 0; // used for memorize the time when the chronometer stopped.
+
+    private Chronometer chronometer; // class for manage the chronometer.
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (savedInstanceState != null)
-        {
-            seconds = savedInstanceState.getInt("seconds");
-            running = savedInstanceState.getBoolean("running");
-            wasRunning = savedInstanceState.getBoolean("wasRunning");
-        }
-        runTimer();
+        chronometer = (Chronometer) findViewById(R.id.Chronometer);
+        chronometer.setBase(SystemClock.elapsedRealtime());
     }
 
-    @Override
-    public void onSaveInstanceState(
-            Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState
-                .putInt("seconds", seconds);
-        savedInstanceState
-                .putBoolean("running", running);
-        savedInstanceState
-                .putBoolean("wasRunning", wasRunning);
-    }
 
+
+    /* Logic of the buttons:
+    * buttonStart: when it's clicked, it will start the chronometer. Additionally it will show up the buttonStop and hide himself.
+    * buttonStop: when it's clicked, it will stop the chronometer. Additionally it will show up the buttonResume and the buttonReset.
+    * buttonResume: when it's clicked, it will restart the chronometer after the user clicked the buttonStop. Additionally it will show up the buttonStop and hide the buttonReset, himself.
+    * buttonReset: when it's clicked, it will reset the chronometer. Additionally it will show up the buttonStart and hide the buttonResume and himself.
+    * */
 
 
 
     public void onClickButtonReset(View view)
     {
-        running = false;
 
-        seconds = 0;
+
+        chronometer = (Chronometer) findViewById(R.id.Chronometer);
+
+        chronometer.stop();
+
+        chronometer.setBase(SystemClock.elapsedRealtime());
+
+        buttonStart = (Button) findViewById(R.id.button_start);
+
+        buttonStart.setVisibility(View.VISIBLE);
+
+        buttonStop = (Button) findViewById(R.id.button_stop);
+
+        buttonStop.setVisibility(View.GONE);
+
+        buttonResume = (Button) findViewById(R.id.button_resume);
+
+        buttonResume.setVisibility(View.GONE);
+
+        buttonReset = (Button) findViewById(R.id.button_reset);
+
+        buttonReset.setVisibility(View.GONE);
     }
 
     public void onClickButtonStop(View view)
     {
-        wasRunning = running;
-        running = false;
+
+
+        chronometer = (Chronometer) findViewById(R.id.Chronometer);
+
+        lastPause = SystemClock.elapsedRealtime();
+
+        chronometer.stop();
+
+        buttonStop = (Button) findViewById(R.id.button_stop);
+
+        buttonStop.setVisibility(View.GONE);
+
+        buttonResume = (Button) findViewById(R.id.button_resume);
+
+        buttonResume.setVisibility(View.VISIBLE);
+
+        buttonReset = (Button) findViewById(R.id.button_reset);
+
+        buttonReset.setVisibility(View.VISIBLE);
+
     }
 
     public void onClickButtonStart(View view)
     {
-        running = true;
+
+        chronometer = (Chronometer) findViewById(R.id.Chronometer);
+
+        chronometer.setBase(SystemClock.elapsedRealtime());
+
+        chronometer.start();
+
+        buttonStart = (Button) findViewById(R.id.button_start);
+
+        buttonStart.setVisibility(View.GONE);
+
+        buttonStop = (Button) findViewById(R.id.button_stop);
+
+        buttonStop.setVisibility(View.VISIBLE);
+
 
     }
 
@@ -76,37 +120,27 @@ public class MainActivity extends AppCompatActivity
     {
 
         super.onResume();
-        if (wasRunning) {
-            running = true;
-        }
+
+        chronometer = (Chronometer) findViewById(R.id.Chronometer);
+
+        chronometer.setBase(chronometer.getBase() + SystemClock.elapsedRealtime() - lastPause);
+
+        chronometer.start();
+
+        buttonStop = (Button) findViewById(R.id.button_stop);
+
+        buttonStop.setVisibility(View.VISIBLE);
+
+        buttonResume = (Button) findViewById(R.id.button_resume);
+
+        buttonResume.setVisibility(View.GONE);
+
+        buttonReset = (Button) findViewById(R.id.button_reset);
+
+        buttonReset.setVisibility(View.GONE);
+
 
     }
-    private void runTimer()
-    {
-        textViewStopwatch = findViewById(R.id.textView_stopwatch);
 
-        Handler handler = new Handler();
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-
-                int hours = seconds / 3600;
-                int minutes = (seconds % 3600) / 60;
-                int secs = seconds % 60;
-
-                String time = String.format(Locale.getDefault(),"%02d:%02d:%02d", hours, minutes, secs);
-
-                textViewStopwatch.setText(time);
-
-                if (running)
-                {
-                    seconds++;
-                }
-
-                handler.postDelayed(this, 1000);
-            }
-        });
-    }
 
 }

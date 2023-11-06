@@ -4,22 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ff000000"
     tools:context=".MainActivity">
-
-    <TextView
-        android:id="@+id/textView_stopwatch"
-        android:layout_width="241dp"
-        android:layout_height="122dp"
-        android:gravity="center"
-        android:text="@string/textView_stopwatch_text"
-        android:typeface="monospace"
-        android:fontFamily="cursive"
-        android:textSize="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_start"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
 
     <Button
         android:id="@+id/button_start"
@@ -40,7 +26,7 @@
         android:layout_height="59dp"
         android:onClick="onClickButtonStop"
         android:text="@string/button_stop_text"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.326"
@@ -56,7 +42,7 @@
         android:layout_marginStart="332dp"
         android:onClick="onClickButtonReset"
         android:text="@string/button_reset_text"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -69,7 +55,7 @@
         android:layout_height="62dp"
         android:onClick="onClickButtonResume"
         android:text="@string/resume"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.137"
@@ -77,5 +63,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.544"
         tools:visibility="visible" />
+
+    <Chronometer
+        android:id="@+id/Chronometer"
+        android:layout_width="241dp"
+        android:layout_height="122dp"
+        android:layout_marginTop="196dp"
+        android:fontFamily="cursive"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        android:typeface="monospace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.535"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
